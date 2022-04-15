@@ -1,4 +1,5 @@
-import sqlite3
+import sqlite3, datetime
+from task import Task
 
 class Database():
     def __init__(self):
@@ -7,7 +8,7 @@ class Database():
         self.connection.commit()
     
     def __init_db(self):
-        return sqlite3.connect('task.db')
+        return sqlite3.connect('task.db', check_same_thread=False)
 
     def __init_tables(self):
         self.connection.execute('''CREATE TABLE IF NOT EXISTS tasks (uuid text, title text, comment text, created_at text, last_updated text, done integer)''')
@@ -32,14 +33,26 @@ class Database():
     def get_task(self, uuid):
         get_one_query = "SELECT * FROM tasks WHERE uuid=:uuid LIMIT 1"
         result = self.connection.execute(get_one_query, {"uuid": uuid})
-        return result.fetchone()
+        return self.__createTask(result.fetchone())
 
     def get_all_tasks(self):
         get_all_query = "SELECT * FROM tasks"
         result = self.connection.execute(get_all_query)
-        return result.fetchall()
+        return self.__createTasks(result.fetchall())
 
     def get_all_tasks_left(self):
         get_all_left_query = "SELECT * FROM tasks WHERE done = 0"
         result = self.connection.execute(get_all_left_query)
-        return result.fetchall()
+        return self.__createTasks(result.fetchall())
+
+    def __createTask(self, db_output):
+        if len(db_output) != 6:
+            return Task()
+        else:
+            return Task(uuid=db_output[0], title=db_output[1],comment=db_output[2],created_at=datetime.datetime.fromisoformat(db_output[3]),last_updated=datetime.datetime.fromisoformat(db_output[4]),done=db_output[5])
+
+    def __createTasks(self, db_output):
+        task_list = []
+        for item in db_output:
+            task_list.append(self.__createTask(item))
+        return task_list
