@@ -1,4 +1,4 @@
-import json, datetime
+import datetime
 
 class Task():
     def __init__(self, uuid, title, comment, created_at, last_updated, done):
@@ -14,6 +14,3 @@ class Task():
     
     def get_dict(self):
         return {'uuid': self.uuid, 'title': self.title,'comment': self.comment,'created_at': self.created_at,'last_updated': self.last_updated,'done': self.done}
-
-    def serialize(self):
-        return json.dumps(self.get_dict())

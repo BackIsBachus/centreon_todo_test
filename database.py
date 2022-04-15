@@ -23,10 +23,15 @@ class Database():
         values = task.get_db_dict()
         self.connection.execute(insert_query, values)
         self.connection.commit()
-        
+    
+    def delete_task(self, uuid):
+        insert_query = "DELETE FROM WHERE uuid = :uuid"
+        self.connection.execute(insert_query, {"uuid": uuid})
+        self.connection.commit()
+
     def get_task(self, uuid):
         get_one_query = "SELECT * FROM tasks WHERE uuid=:uuid LIMIT 1"
-        result = self.connection.execute(get_one_query, {"uuid: uuid"})
+        result = self.connection.execute(get_one_query, {"uuid": uuid})
         return result.fetchone()
 
     def get_all_tasks(self):
