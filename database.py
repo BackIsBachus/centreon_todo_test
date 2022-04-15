@@ -26,8 +26,8 @@ class Database():
         self.connection.commit()
     
     def delete_task(self, uuid):
-        insert_query = "DELETE FROM WHERE uuid = :uuid"
-        self.connection.execute(insert_query, {"uuid": uuid})
+        delete_query = "DELETE FROM tasks WHERE uuid = :uuid"
+        self.connection.execute(delete_query, {"uuid": uuid})
         self.connection.commit()
 
     def get_task(self, uuid):
@@ -46,8 +46,8 @@ class Database():
         return self.__createTasks(result.fetchall())
 
     def __createTask(self, db_output):
-        if len(db_output) != 6:
-            return Task()
+        if db_output == None:
+            return None
         else:
             return Task(uuid=db_output[0], title=db_output[1],comment=db_output[2],created_at=datetime.datetime.fromisoformat(db_output[3]),last_updated=datetime.datetime.fromisoformat(db_output[4]),done=db_output[5])
 
